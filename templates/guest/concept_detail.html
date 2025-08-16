@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}{{ concept.name }} - Guest Mode{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <!-- Concept Header -->
+    <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('guest.guest_home') }}">Guest Mode</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('guest.concepts') }}">Concepts</a></li>
+                <li class="breadcrumb-item active">{{ concept.name }}</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+                <h1 class="text-primary">{{ concept.name }}</h1>
+                <p class="lead text-muted">{{ concept.description }}</p>
+                <div class="d-flex gap-2 mb-3">
+                    <span class="badge bg-primary">{{ concept.category }}</span>
+                    <span class="badge bg-secondary">Difficulty: {{ concept.difficulty_level }}/5</span>
+                </div>
+            </div>
+            <div class="text-end">
+                <div class="alert alert-info mb-2">
+                    <i class="fas fa-info-circle me-1"></i>
+                    <small>Guest Mode - Progress not saved</small>
+                </div>
+                <a href="{{ url_for('guest.practice', concept_id=concept.id) }}" class="btn btn-success">
+                    <i class="fas fa-dumbbell me-2"></i>Try Practice
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lesson Content -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3><i class="fas fa-book me-2"></i>Lesson</h3>
+        </div>
+        <div class="card-body">
+            {{ concept.lesson_content|safe }}
+        </div>
+    </div>
+
+    <!-- Examples -->
+    {% if concept.examples %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3><i class="fas fa-lightbulb me-2"></i>Examples</h3>
+        </div>
+        <div class="card-body">
+            {% set examples = concept.examples|from_json %}
+            {% for example in examples %}
+            <div class="mb-3 p-3 bg-light rounded">
+                <strong>Q: {{ example.question }}</strong><br>
+                <em>A: {{ example.answer }}</em>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Practice Problems Preview -->
+    {% if practice_problems %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3><i class="fas fa-dumbbell me-2"></i>Practice Problems Preview</h3>
+        </div>
+        <div class="card-body">
+            <p class="text-muted mb-3">
+                Here are some practice problems to test your understanding. 
+                <a href="{{ url_for('guest.practice', concept_id=concept.id) }}">Try them all</a>!
+            </p>
+            
+            {% for problem in practice_problems[:2] %}
+            <div class="mb-3 p-3 border rounded">
+                <strong>{{ loop.index }}. {{ problem.question }}</strong>
+                <div class="mt-2">
+                    {% if problem.problem_type == 'multiple_choice' %}
+                        {% set options = problem.get_options_list() %}
+                        {% for option in options %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="problem_{{ problem.id }}" id="option_{{ loop.index }}" disabled>
+                            <label class="form-check-label" for="option_{{ loop.index }}">
+                                {{ option }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <input type="text" class="form-control" placeholder="Your answer" disabled>
+                    {% endif %}
+                </div>
+                <small class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Sign in to practice and get instant feedback!
+                </small>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Call to Action -->
+    <div class="text-center">
+        <div class="card bg-warning text-dark">
+            <div class="card-body">
+                <h4><i class="fas fa-star me-2"></i>Ready for More?</h4>
+                <p class="mb-3">
+                    Create a free account to track your progress, earn achievements, and unlock unlimited practice problems!
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{{ url_for('guest.practice', concept_id=concept.id) }}" class="btn btn-primary">
+                        <i class="fas fa-dumbbell me-2"></i>Try Practice Mode
+                    </a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-success">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

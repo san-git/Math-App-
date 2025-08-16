@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}All Concepts - Guest Mode{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <!-- Header -->
+    <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('guest.guest_home') }}">Guest Mode</a></li>
+                <li class="breadcrumb-item active">All Concepts</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="text-primary">
+                    <i class="fas fa-graduation-cap me-2"></i>All Math Concepts
+                </h1>
+                <p class="lead text-muted">Explore the complete 8th grade mathematics curriculum</p>
+            </div>
+            <div class="text-end">
+                <div class="alert alert-info mb-0">
+                    <i class="fas fa-info-circle me-1"></i>
+                    <small>Guest Mode - Progress not saved</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Concepts Grid -->
+    <div class="row g-4">
+        {% for concept in concepts %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card concept-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title text-primary">{{ concept.name }}</h5>
+                        <span class="badge bg-secondary">{{ concept.difficulty_level }}/5</span>
+                    </div>
+                    
+                    <p class="card-text text-muted mb-3">{{ concept.description }}</p>
+                    
+                    <div class="mb-3">
+                        <span class="badge bg-primary me-1">{{ concept.category }}</span>
+                        <small class="text-muted">Order: {{ concept.order_in_curriculum }}</small>
+                    </div>
+                    
+                    {% if concept.prerequisites %}
+                    <div class="mb-3">
+                        <small class="text-muted">
+                            <i class="fas fa-link me-1"></i>
+                            Prerequisites: {{ concept.prerequisites }}
+                        </small>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('guest.concept_detail', slug=concept.slug) }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-book me-1"></i>Learn
+                        </a>
+                        <a href="{{ url_for('guest.practice', concept_id=concept.id) }}" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-dumbbell me-1"></i>Practice
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center mt-5">
+        <div class="card bg-gradient text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="card-body py-4">
+                <h3 class="mb-3">Enjoying the Concepts?</h3>
+                <p class="mb-4">
+                    Create a free account to track your progress, earn achievements, and unlock the full Math Quest experience!
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
