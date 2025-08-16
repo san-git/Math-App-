@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Math Quest - 8th Grade Math Game{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <!-- Hero Section -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary mb-4">
+            <i class="fas fa-calculator me-3"></i>Math Quest
+        </h1>
+        <p class="lead fs-4 mb-4">
+            Master 8th grade mathematics through interactive lessons, practice problems, and gamified learning!
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-rocket me-2"></i>Continue Learning
+            </a>
+            {% else %}
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Start Learning
+            </a>
+            <a href="{{ url_for('guest.guest_home') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-user-friends me-2"></i>Try Guest Mode
+            </a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-sign-in-alt me-2"></i>Login
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="display-4 text-primary mb-3">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h5 class="card-title">Comprehensive Curriculum</h5>
+                    <p class="card-text">
+                        Cover all 8th grade math concepts from number systems to probability, 
+                        with step-by-step lessons and examples.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="display-4 text-success mb-3">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <h5 class="card-title">Interactive Practice</h5>
+                    <p class="card-text">
+                        Reinforce learning with adaptive practice problems, 
+                        instant feedback, and detailed explanations.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="display-4 text-warning mb-3">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h5 class="card-title">Progress Tracking</h5>
+                    <p class="card-text">
+                        Monitor your learning journey with detailed progress reports, 
+                        achievements, and performance analytics.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Curriculum Preview -->
+    <div class="mb-5">
+        <h2 class="text-center mb-4">
+            <i class="fas fa-graduation-cap me-2"></i>What You'll Learn
+        </h2>
+        <div class="row g-3">
+            <div class="col-md-6 col-lg-3">
+                <div class="card concept-card">
+                    <div class="card-body">
+                        <h6 class="card-title text-primary">
+                            <i class="fas fa-hashtag me-2"></i>Numbers & Operations
+                        </h6>
+                        <p class="card-text small">Rational numbers, exponents, scientific notation</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card concept-card">
+                    <div class="card-body">
+                        <h6 class="card-title text-primary">
+                            <i class="fas fa-function me-2"></i>Algebra
+                        </h6>
+                        <p class="card-text small">Linear equations, functions, inequalities</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card concept-card">
+                    <div class="card-body">
+                        <h6 class="card-title text-primary">
+                            <i class="fas fa-shapes me-2"></i>Geometry
+                        </h6>
+                        <p class="card-text small">Angles, triangles, Pythagorean theorem</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card concept-card">
+                    <div class="card-body">
+                        <h6 class="card-title text-primary">
+                            <i class="fas fa-chart-bar me-2"></i>Statistics & Probability
+                        </h6>
+                        <p class="card-text small">Data analysis, probability concepts</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center">
+        <div class="card bg-primary text-white">
+            <div class="card-body py-4">
+                <h3 class="mb-3">Ready to Start Your Math Journey?</h3>
+                <p class="mb-4">
+                    Join thousands of students mastering 8th grade mathematics with our interactive platform.
+                </p>
+                {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg">
+                    <i class="fas fa-rocket me-2"></i>Get Started Now
+                </a>
+                {% else %}
+                <a href="{{ url_for('concepts.concept_list') }}" class="btn btn-light btn-lg">
+                    <i class="fas fa-book me-2"></i>Explore Concepts
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

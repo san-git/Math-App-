@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Math Quest{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="text-primary mb-2">
+                <i class="fas fa-tachometer-alt me-2"></i>Welcome back, {{ current_user.username }}!
+            </h1>
+            <p class="lead text-muted">Continue your math journey where you left off</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h4 class="mb-0">{{ "%.1f"|format(progress_percentage) }}%</h4>
+                    <small>Complete</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Overview -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="display-6 text-primary mb-2">{{ concepts|length }}</div>
+                    <h6 class="card-title">Total Concepts</h6>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="display-6 text-success mb-2">{{ completed_concepts|length }}</div>
+                    <h6 class="card-title">Completed</h6>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="display-6 text-warning mb-2">{{ current_user.total_score }}</div>
+                    <h6 class="card-title">Total Score</h6>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="display-6 text-info mb-2">{{ concepts|length - completed_concepts|length }}</div>
+                    <h6 class="card-title">Remaining</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Next Concept -->
+    {% if next_concept %}
+    <div class="card bg-gradient text-white mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h4 class="mb-2">
+                        <i class="fas fa-arrow-right me-2"></i>Next Up: {{ next_concept.name }}
+                    </h4>
+                    <p class="mb-3">{{ next_concept.description }}</p>
+                    <a href="{{ url_for('concepts.concept_detail', slug=next_concept.slug) }}" class="btn btn-light">
+                        <i class="fas fa-play me-2"></i>Start Learning
+                    </a>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="display-4">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Concept Progress -->
+    <div class="mb-4">
+        <h3 class="mb-3">
+            <i class="fas fa-list me-2"></i>Your Learning Path
+        </h3>
+        
+        <div class="row g-3">
+            {% for concept in concepts %}
+            {% set user_progress = progress_records|selectattr("concept_id", "equalto", concept.id)|first %}
+            {% set is_completed = concept.id in completed_concepts %}
+            {% set is_available = concept.is_available_for_user(completed_concepts) %}
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="card concept-card h-100 {% if is_completed %}completed{% elif is_available %}available{% else %}locked{% endif %}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="card-title mb-0">{{ concept.name }}</h6>
+                            {% if is_completed %}
+                            <span class="badge bg-success">
+                                <i class="fas fa-check me-1"></i>Complete
+                            </span>
+                            {% elif is_available %}
+                            <span class="badge bg-warning">
+                                <i class="fas fa-play me-1"></i>Available
+                            </span>
+                            {% else %}
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-lock me-1"></i>Locked
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <p class="card-text small text-muted mb-3">{{ concept.description }}</p>
+                        
+                        {% if user_progress %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>Progress</span>
+                                <span>{{ user_progress.score }}%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar" style="width: {{ user_progress.score }}%"></div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="d-flex gap-2">
+                            {% if is_completed %}
+                            <a href="{{ url_for('concepts.concept_detail', slug=concept.slug) }}" class="btn btn-outline-success btn-sm">
+                                <i class="fas fa-redo me-1"></i>Review
+                            </a>
+                            {% elif is_available %}
+                            <a href="{{ url_for('concepts.concept_detail', slug=concept.slug) }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-play me-1"></i>Start
+                            </a>
+                            {% else %}
+                            <button class="btn btn-secondary btn-sm" disabled>
+                                <i class="fas fa-lock me-1"></i>Locked
+                            </button>
+                            {% endif %}
+                            
+                            {% if concept.prerequisites %}
+                            <button class="btn btn-outline-info btn-sm" data-bs-toggle="tooltip" 
+                                    title="Prerequisites: {{ concept.prerequisites }}">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="display-4 text-primary mb-3">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <h5 class="card-title">Practice Problems</h5>
+                    <p class="card-text">Sharpen your skills with interactive practice</p>
+                    <a href="{{ url_for('practice.practice_home') }}" class="btn btn-primary">
+                        <i class="fas fa-play me-2"></i>Start Practice
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="display-4 text-success mb-3">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h5 class="card-title">View Progress</h5>
+                    <p class="card-text">Track your learning journey and achievements</p>
+                    <a href="{{ url_for('progress.progress_overview') }}" class="btn btn-success">
+                        <i class="fas fa-chart-bar me-2"></i>View Progress
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Initialize tooltips
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+})
+</script>
+{% endblock %}
