@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, jsonify, flash, redirect,
 from flask_login import login_required, current_user
 from models.practice import PracticeProblem, PracticeAttempt
 from models.concept import Concept
-from app import db
+from app import db, csrf
 from datetime import datetime
 import json
 
@@ -43,6 +43,7 @@ def practice_problem(problem_id):
 
 @practice_bp.route('/submit/<int:problem_id>', methods=['POST'])
 @login_required
+@csrf.exempt
 def submit_answer(problem_id):
     """Submit answer for a practice problem"""
     problem = PracticeProblem.query.get_or_404(problem_id)
@@ -93,6 +94,7 @@ def concept_quiz(concept_id):
 
 @practice_bp.route('/quiz/submit', methods=['POST'])
 @login_required
+@csrf.exempt
 def submit_quiz():
     """Submit quiz answers and calculate final score"""
     data = request.get_json()

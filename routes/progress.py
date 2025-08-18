@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required, current_user
 from models.progress import ProgressRecord
 from models.concept import Concept
-from models.practice import PracticeAttempt
+from models.practice import PracticeAttempt, PracticeProblem
 from app import db
 from datetime import datetime, timedelta
 import json

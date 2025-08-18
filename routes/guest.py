@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify
 from models.concept import Concept
 from models.practice import PracticeProblem
-from app import db
+from app import db, csrf
 
 guest_bp = Blueprint('guest', __name__)
 
@@ -43,6 +43,7 @@ def guest_practice(concept_id):
                          problems=problems)
 
 @guest_bp.route('/practice/submit/<int:problem_id>', methods=['POST'])
+@csrf.exempt
 def guest_submit_answer(problem_id):
     """Submit answer for guest practice (no scoring)"""
     problem = PracticeProblem.query.get_or_404(problem_id)

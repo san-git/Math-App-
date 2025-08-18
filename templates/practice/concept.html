@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Practice - {{ concept.name }}{% endblock %}
+{% block content %}
+<div class="main-content">
+    <h2 class="mb-4">{{ concept.name }} - Practice</h2>
+    {% for problem in problems %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="mb-2">{{ problem.question | safe }}</div>
+            <a class="btn btn-outline-primary btn-sm" href="{{ url_for('practice.practice_problem', problem_id=problem.id) }}">Open</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %} 

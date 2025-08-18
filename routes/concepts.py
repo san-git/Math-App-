@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from models.concept import Concept
 from models.progress import ProgressRecord
 from models.practice import PracticeProblem
-from app import db
+from app import db, csrf
 
 concepts_bp = Blueprint('concepts', __name__)
 
@@ -68,6 +68,7 @@ def concept_practice(slug):
 
 @concepts_bp.route('/<slug>/complete', methods=['POST'])
 @login_required
+@csrf.exempt
 def mark_concept_complete(slug):
     """Mark a concept as completed"""
     concept = Concept.query.filter_by(slug=slug).first_or_404()
@@ -97,6 +98,7 @@ def mark_concept_complete(slug):
 
 @concepts_bp.route('/<slug>/progress', methods=['POST'])
 @login_required
+@csrf.exempt
 def update_progress(slug):
     """Update user progress for a concept"""
     concept = Concept.query.filter_by(slug=slug).first_or_404()

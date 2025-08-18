@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Progress - {{ concept.name }}{% endblock %}
+{% block content %}
+<div class="main-content">
+    <h2 class="mb-3">{{ concept.name }} - Progress</h2>
+    {% if progress %}
+    <p>Score: {{ progress.score }}%, Attempts: {{ progress.attempts }}</p>
+    {% else %}
+    <p class="text-muted">No progress yet.</p>
+    {% endif %}
+</div>
+{% endblock %} 

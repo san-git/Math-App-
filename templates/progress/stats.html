@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Progress - Stats{% endblock %}
+{% block content %}
+<div class="main-content">
+    <h2 class="mb-3">Statistics</h2>
+    <ul>
+        <li>Total score: {{ total_score }}</li>
+        <li>Total time: {{ total_time }} seconds</li>
+        <li>Total attempts: {{ total_attempts }}</li>
+        <li>Accuracy: {{ '%.1f'|format(accuracy) }}%</li>
+    </ul>
+</div>
+{% endblock %} 

@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Problem #{{ problem.id }} - {{ concept.name }}{% endblock %}
+{% block content %}
+<div class="main-content">
+    <h2 class="mb-3">{{ concept.name }} - Problem #{{ problem.id }}</h2>
+    <div class="mb-3">{{ problem.question | safe }}</div>
+</div>
+{% endblock %} 
