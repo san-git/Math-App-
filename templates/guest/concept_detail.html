@@ -9,7 +9,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ url_for('guest.guest_home') }}">Guest Mode</a></li>
-                <li class="breadcrumb-item"><a href="{{ url_for('guest.concepts') }}">Concepts</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('guest.guest_concepts') }}">Concepts</a></li>
                 <li class="breadcrumb-item active">{{ concept.name }}</li>
             </ol>
         </nav>
@@ -28,7 +28,7 @@
                     <i class="fas fa-info-circle me-1"></i>
                     <small>Guest Mode - Progress not saved</small>
                 </div>
-                <a href="{{ url_for('guest.practice', concept_id=concept.id) }}" class="btn btn-success">
+                <a href="{{ url_for('guest.guest_practice', concept_id=concept.id) }}" class="btn btnSuccess">
                     <i class="fas fa-dumbbell me-2"></i>Try Practice
                 </a>
             </div>
@@ -72,7 +72,7 @@
         <div class="card-body">
             <p class="text-muted mb-3">
                 Here are some practice problems to test your understanding. 
-                <a href="{{ url_for('guest.practice', concept_id=concept.id) }}">Try them all</a>!
+                <a href="{{ url_for('guest.guest_practice', concept_id=concept.id) }}">Try them all</a>!
             </p>
             
             {% for problem in practice_problems[:2] %}
@@ -112,7 +112,7 @@
                     Create a free account to track your progress, earn achievements, and unlock unlimited practice problems!
                 </p>
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="{{ url_for('guest.practice', concept_id=concept.id) }}" class="btn btn-primary">
+                    <a href="{{ url_for('guest.guest_practice', concept_id=concept.id) }}" class="btn btn-primary">
                         <i class="fas fa-dumbbell me-2"></i>Try Practice Mode
                     </a>
                     <a href="{{ url_for('auth.register') }}" class="btn btn-success">

@@ -57,10 +57,10 @@
                     {% endif %}
                     
                     <div class="d-flex gap-2">
-                        <a href="{{ url_for('guest.concept_detail', slug=concept.slug) }}" class="btn btn-outline-primary btn-sm">
+                        <a href="{{ url_for('guest.guest_concept_detail', slug=concept.slug) }}" class="btn btn-outline-primary btn-sm">
                             <i class="fas fa-book me-1"></i>Learn
                         </a>
-                        <a href="{{ url_for('guest.practice', concept_id=concept.id) }}" class="btn btn-outline-success btn-sm">
+                        <a href="{{ url_for('guest.guest_practice', concept_id=concept.id) }}" class="btn btn-outline-success btn-sm">
                             <i class="fas fa-dumbbell me-1"></i>Practice
                         </a>
                     </div>
