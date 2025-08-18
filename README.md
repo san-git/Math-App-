@@ -34,8 +34,10 @@ A comprehensive, interactive math learning platform designed specifically for 8t
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd math
+   git clone https://github.com/san-git/Math-App-.git
+   cd Math-App-
+   # Optional: checkout the latest changes branch used in docs
+   git checkout chore/setup-csrf-config-templates
    ```
 
 2. **Create a virtual environment**
@@ -62,11 +64,14 @@ A comprehensive, interactive math learning platform designed specifically for 8t
 
 6. **Run the application**
    ```bash
-   python app.py
+   # Dev server
+   python run.py  # serves at http://localhost:5001
+   # Or use the helper script (macOS/Linux):
+   ./start.sh
    ```
 
 7. **Open your browser**
-   Navigate to `http://localhost:5000`
+   Navigate to `http://localhost:5001`
 
 ## 🏗️ Architecture
 
@@ -187,6 +192,26 @@ RUN pip install -r requirements.txt
 COPY . .
 EXPOSE 8000
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "app:create_app()"]
+```
+
+### Windows Quick Start
+
+```powershell
+# Clone
+git clone https://github.com/san-git/Math-App-.git
+cd Math-App-
+# Optional branch used in docs
+git checkout chore/setup-csrf-config-templates
+
+# Virtual environment
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Seed and run
+python seed_data.py
+python run.py  # http://localhost:5001
 ```
 
 ## 🔒 Security Features
