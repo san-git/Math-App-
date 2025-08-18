@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 import os
+import json
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -26,6 +27,16 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     csrf.init_app(app)
+
+    # Jinja filters
+    @app.template_filter('from_json')
+    def from_json_filter(value):
+        try:
+            if value is None or value == '':
+                return []
+            return json.loads(value)
+        except Exception:
+            return []
     
     # Register blueprints
     from routes.main import main_bp
