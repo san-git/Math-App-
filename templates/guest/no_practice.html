@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}No Practice Available - {{ concept.name }}{% endblock %}
+{% block content %}
+<div class="main-content text-center">
+    <h2 class="mb-3"><i class="fas fa-dumbbell me-2"></i>No Practice Available</h2>
+    <p class="text-muted">Practice problems for "{{ concept.name }}" are not available yet.</p>
+    <a class="btn btn-primary" href="{{ url_for('guest.guest_concepts') }}">
+        <i class="fas fa-arrow-left me-2"></i>Back to Concepts
+    </a>
+</div>
+{% endblock %} 
