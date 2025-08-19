@@ -34,8 +34,10 @@ A comprehensive, interactive math learning platform designed specifically for 8t
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd math
+   git clone https://github.com/san-git/Math-App-.git
+   cd Math-App-
+   # Optional: checkout the latest changes branch used in docs
+   git checkout chore/setup-csrf-config-templates
    ```
 
 2. **Create a virtual environment**
@@ -62,11 +64,14 @@ A comprehensive, interactive math learning platform designed specifically for 8t
 
 6. **Run the application**
    ```bash
-   python app.py
+   # Dev server
+   python run.py  # serves at http://localhost:5001
+   # Or use the helper script (macOS/Linux):
+   ./start.sh
    ```
 
 7. **Open your browser**
-   Navigate to `http://localhost:5000`
+   Navigate to `http://localhost:5001`
 
 ## 🏗️ Architecture
 
@@ -160,22 +165,20 @@ The application uses SQLite by default for development. For production, consider
 
 ### Production Setup
 
-1. **Use a production WSGI server**
-   ```bash
-   pip install gunicorn
-   gunicorn -w 4 -b 0.0.0.0:8000 app:create_app()
-   ```
+- One-click on Render: connect repo and use the included `render.yaml`
+- Or run Gunicorn directly:
+```bash
+pip install gunicorn
+export FLASK_ENV=production
+export SECRET_KEY=strong-production-secret-key
+export DATABASE_URL=postgresql://user:pass@host:5432/mathgame
+gunicorn -w 4 -b 0.0.0.0:8000 app:create_app()
+```
 
-2. **Set production environment variables**
-   ```env
-   FLASK_ENV=production
-   SECRET_KEY=strong-production-secret-key
-   DATABASE_URL=postgresql://user:pass@localhost/mathgame
-   ```
-
-3. **Configure reverse proxy (nginx)**
-4. **Set up SSL certificates**
-5. **Configure database backups**
+Notes:
+- Use Postgres in production (set `DATABASE_URL`).
+- Set a strong `SECRET_KEY`.
+- Behind a proxy, terminate SSL and forward `X-Forwarded-*` headers.
 
 ### Docker Deployment
 
@@ -187,6 +190,26 @@ RUN pip install -r requirements.txt
 COPY . .
 EXPOSE 8000
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "app:create_app()"]
+```
+
+### Windows Quick Start
+
+```powershell
+# Clone
+git clone https://github.com/san-git/Math-App-.git
+cd Math-App-
+# Optional branch used in docs
+git checkout chore/setup-csrf-config-templates
+
+# Virtual environment
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Seed and run
+python seed_data.py
+python run.py  # http://localhost:5001
 ```
 
 ## 🔒 Security Features

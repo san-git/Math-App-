@@ -1,7 +1,9 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 import os
+import json
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -10,20 +12,36 @@ load_dotenv()
 # Initialize extensions
 db = SQLAlchemy()
 login_manager = LoginManager()
+csrf = CSRFProtect()
 
 def create_app():
     """Application factory pattern for creating Flask app"""
     app = Flask(__name__)
     
     # Configuration
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///math_game.db')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    from config import get_config
+    app.config.from_object(get_config())
     
     # Initialize extensions with app
     db.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
+    csrf.init_app(app)
+
+    # Make csrf_token() available in templates
+    @app.context_processor
+    def inject_csrf_token():
+        return dict(csrf_token=generate_csrf)
+
+    # Jinja filters
+    @app.template_filter('from_json')
+    def from_json_filter(value):
+        try:
+            if value is None or value == '':
+                return []
+            return json.loads(value)
+        except Exception:
+            return []
     
     # Register blueprints
     from routes.main import main_bp

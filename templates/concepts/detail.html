@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ concept.name }} - Math Quest{% endblock %}
+{% block content %}
+<div class="main-content">
+    <h2 class="mb-3">{{ concept.name }}</h2>
+    <p class="text-muted">{{ concept.description }}</p>
+    <div class="mb-4">{{ concept.lesson_content | safe }}</div>
+    <a class="btn btn-primary" href="{{ url_for('concepts.concept_practice', slug=concept.slug) }}">
+        <i class="fas fa-dumbbell me-2"></i>Practice
+    </a>
+</div>
+{% endblock %} 

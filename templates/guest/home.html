@@ -29,7 +29,7 @@
                     </div>
                     <h5 class="card-title">Explore Concepts</h5>
                     <p class="card-text">Browse through all 8th grade math concepts with detailed lessons</p>
-                    <a href="{{ url_for('guest.concepts') }}" class="btn btn-primary">
+                    <a href="{{ url_for('guest.guest_concepts') }}" class="btn btn-primary">
                         <i class="fas fa-play me-2"></i>Start Learning
                     </a>
                 </div>
@@ -44,7 +44,7 @@
                     </div>
                     <h5 class="card-title">Practice Problems</h5>
                     <p class="card-text">Try interactive practice problems with instant feedback</p>
-                    <a href="{{ url_for('guest.concepts') }}" class="btn btn-success">
+                    <a href="{{ url_for('guest.guest_concepts') }}" class="btn btn-success">
                         <i class="fas fa-dumbbell me-2"></i>Start Practice
                     </a>
                 </div>
@@ -59,7 +59,7 @@
                     </div>
                     <h5 class="card-title">See Full Features</h5>
                     <p class="card-text">Discover what you can do with a full account</p>
-                    <a href="{{ url_for('guest.demo') }}" class="btn btn-warning">
+                    <a href="{{ url_for('guest.guest_demo') }}" class="btn btn-warning">
                         <i class="fas fa-star me-2"></i>View Demo
                     </a>
                 </div>
@@ -81,10 +81,10 @@
                         <h6 class="card-title text-primary">{{ concept.name }}</h6>
                         <p class="card-text small text-muted">{{ concept.description }}</p>
                         <div class="d-flex gap-2">
-                            <a href="{{ url_for('guest.concept_detail', slug=concept.slug) }}" class="btn btn-outline-primary btn-sm">
+                            <a href="{{ url_for('guest.guest_concept_detail', slug=concept.slug) }}" class="btn btn-outline-primary btn-sm">
                                 <i class="fas fa-book me-1"></i>Learn
                             </a>
-                            <a href="{{ url_for('guest.practice', concept_id=concept.id) }}" class="btn btn-outline-success btn-sm">
+                            <a href="{{ url_for('guest.guest_practice', concept_id=concept.id) }}" class="btn btn-outline-success btn-sm">
                                 <i class="fas fa-dumbbell me-1"></i>Practice
                             </a>
                         </div>
@@ -95,7 +95,7 @@
         </div>
         
         <div class="text-center mt-4">
-            <a href="{{ url_for('guest.concepts') }}" class="btn btn-primary btn-lg">
+            <a href="{{ url_for('guest.guest_concepts') }}" class="btn btn-primary btn-lg">
                 <i class="fas fa-list me-2"></i>View All Concepts
             </a>
         </div>

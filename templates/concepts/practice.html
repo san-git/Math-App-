@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Practice - {{ concept.name }}{% endblock %}
+{% block content %}
+<div class="main-content">
+    <h2 class="mb-4"><i class="fas fa-dumbbell me-2"></i>Practice: {{ concept.name }}</h2>
+    {% for problem in problems %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="mb-2">{{ problem.question | safe }}</div>
+            {% if problem.problem_type == 'multiple_choice' %}
+                <ul>
+                    {% for opt in problem.get_options_list() %}
+                    <li>{{ opt }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %} 

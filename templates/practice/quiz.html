@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Quiz - {{ concept.name }}{% endblock %}
+{% block content %}
+<div class="main-content">
+    <h2 class="mb-3"><i class="fas fa-list-ol me-2"></i>Quiz: {{ concept.name }}</h2>
+    <form id="quiz-form">
+        {% for problem in problems %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="mb-2 fw-semibold">Q{{ loop.index }}. {{ problem.question|safe }}</div>
+                {% if problem.problem_type == 'multiple_choice' %}
+                    {% set options = problem.get_options_list() %}
+                    {% for opt in options %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="q{{ problem.id }}" value="{{ opt }}">
+                        <label class="form-check-label">{{ opt }}</label>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <input type="text" class="form-control mt-2" name="q{{ problem.id }}">
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        <button type="button" class="btn btn-primary" onclick="submitQuiz()">
+            <i class="fas fa-paper-plane me-1"></i>Submit Quiz
+        </button>
+    </form>
+    <div id="quiz-result" class="mt-3"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function submitQuiz(){
+  const form = document.getElementById('quiz-form');
+  const data = { concept_id: {{ concept.id }}, answers: {}, total_time: 0 };
+  {% for problem in problems %}
+  const name = 'q{{ problem.id }}';
+  const radios = form.querySelectorAll("input[name='" + name + "']");
+  let value = '';
+  for (const r of radios) { if (r.checked) { value = r.value; break; } }
+  if (!value) {
+    const text = form.querySelector("input[name='" + name + "']");
+    if (text) value = text.value;
+  }
+  data.answers['{{ problem.id }}'] = value;
+  {% endfor %}
+  fetch('{{ url_for('practice.submit_quiz') }}', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) })
+    .then(r=>r.json()).then(function(res){
+      document.getElementById('quiz-result').innerHTML = 'Score: ' + res.percentage.toFixed(1) + '% (' + res.correct_answers + '/' + res.total_problems + ')';
+    }).catch(function(){
+      document.getElementById('quiz-result').innerText = 'Error submitting quiz.';
+    });
+}
+</script>
+{% endblock %} 
