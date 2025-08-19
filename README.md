@@ -165,22 +165,20 @@ The application uses SQLite by default for development. For production, consider
 
 ### Production Setup
 
-1. **Use a production WSGI server**
-   ```bash
-   pip install gunicorn
-   gunicorn -w 4 -b 0.0.0.0:8000 app:create_app()
-   ```
+- One-click on Render: connect repo and use the included `render.yaml`
+- Or run Gunicorn directly:
+```bash
+pip install gunicorn
+export FLASK_ENV=production
+export SECRET_KEY=strong-production-secret-key
+export DATABASE_URL=postgresql://user:pass@host:5432/mathgame
+gunicorn -w 4 -b 0.0.0.0:8000 app:create_app()
+```
 
-2. **Set production environment variables**
-   ```env
-   FLASK_ENV=production
-   SECRET_KEY=strong-production-secret-key
-   DATABASE_URL=postgresql://user:pass@localhost/mathgame
-   ```
-
-3. **Configure reverse proxy (nginx)**
-4. **Set up SSL certificates**
-5. **Configure database backups**
+Notes:
+- Use Postgres in production (set `DATABASE_URL`).
+- Set a strong `SECRET_KEY`.
+- Behind a proxy, terminate SSL and forward `X-Forwarded-*` headers.
 
 ### Docker Deployment
 
