@@ -70,6 +70,17 @@ def create_app():
     # Create database tables
     with app.app_context():
         db.create_all()
+        # Auto-seed if database is empty (first deploys)
+        try:
+            from models.concept import Concept
+            if Concept.query.count() == 0:
+                # Import here to avoid circular imports at module import time
+                import seed_data as seeder
+                seeder.seed_concepts()
+                seeder.seed_practice_problems()
+        except Exception:
+            # Fail silently to avoid blocking app startup in production
+            pass
     
     return app
 
