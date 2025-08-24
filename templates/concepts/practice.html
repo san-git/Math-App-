@@ -3,19 +3,39 @@
 {% block content %}
 <div class="main-content">
     <h2 class="mb-4"><i class="fas fa-dumbbell me-2"></i>Practice: {{ concept.name }}</h2>
-    {% for problem in problems %}
-    <div class="card mb-3">
-        <div class="card-body">
-            <div class="mb-2">{{ problem.question | safe }}</div>
-            {% if problem.problem_type == 'multiple_choice' %}
-                <ul>
-                    {% for opt in problem.get_options_list() %}
-                    <li>{{ opt }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+    {% if problems %}
+        {% for problem in problems %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="mb-2 fw-semibold">{{ problem.question | safe }}</div>
+                {% if problem.problem_type == 'multiple_choice' %}
+                    {% set options = problem.get_options_list() %}
+                    <div class="list-group mb-2">
+                        {% for opt in options %}
+                        <label class="list-group-item">
+                            <input class="form-check-input me-1" type="radio" name="p{{ problem.id }}" value="{{ opt }}">
+                            {{ opt }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <input type="text" class="form-control mb-2" placeholder="Your answer" name="p{{ problem.id }}-text">
+                {% endif %}
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary btn-sm" onclick="submitPractice({{ problem.id }})">
+                        <i class="fas fa-paper-plane me-1"></i>Check
+                    </button>
+                    <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('practice.practice_problem', problem_id=problem.id) }}">Open</a>
+                </div>
+                <div id="result-{{ problem.id }}" class="mt-2"></div>
+            </div>
         </div>
-    </div>
-    {% endfor %}
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info">No practice problems available yet for this concept.</div>
+    {% endif %}
+    <a class="btn btn-outline-primary" href="{{ url_for('practice.concept_quiz', concept_id=concept.id) }}">
+        <i class="fas fa-list-ol me-1"></i>Take Quiz
+    </a>
 </div>
 {% endblock %} 
