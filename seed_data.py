@@ -500,6 +500,103 @@ def seed_practice_problems():
     db.session.commit()
     print(f"Seeded {len(problems_data)} practice problems")
 
+def seed_transformations():
+    """Seed 8th-grade geometry transformations (translations, reflections, rotations, dilations)."""
+    from models.concept import Concept
+    from models.practice import PracticeProblem
+
+    existing = Concept.query.filter_by(slug="transformations").first()
+    if not existing:
+        concept = Concept(
+            name="Transformations",
+            slug="transformations",
+            description="Translations, reflections, rotations, and dilations on the coordinate plane",
+            difficulty_level=3,
+            order_in_curriculum=9,
+            category="Geometry",
+            lesson_content="""
+            <h2>Transformations on the Coordinate Plane</h2>
+            <p>A transformation moves or changes a figure to produce a new figure called the image.</p>
+            <h3>Translations</h3>
+            <p>Slide a figure without rotating or reflecting it. (x, y) → (x + a, y + b)</p>
+            <h3>Reflections</h3>
+            <p>Flip a figure over a line (axis of reflection). Examples: Over x-axis: (x, y) → (x, −y); Over y-axis: (x, y) → (−x, y)</p>
+            <h3>Rotations</h3>
+            <p>Turn a figure about the origin by 90°, 180°, or 270°.</p>
+            <ul>
+                <li>90° CCW: (x, y) → (−y, x)</li>
+                <li>180°: (x, y) → (−x, −y)</li>
+                <li>270° CCW: (x, y) → (y, −x)</li>
+            </ul>
+            <h3>Dilations</h3>
+            <p>Resize a figure from the origin by a scale factor k: (x, y) → (kx, ky). If k > 1, enlargement; if 0 < k < 1, reduction.</p>
+            """,
+            examples=json.dumps([
+                {"question": "Translate (−3, 4) by (5, −2).", "answer": "(2, 2)"},
+                {"question": "Reflect (2, −7) over the y-axis.", "answer": "(−2, −7)"},
+                {"question": "Rotate (1, 5) 90° CCW about the origin.", "answer": "(−5, 1)"}
+            ]),
+            prerequisites="geometry_basics"
+        )
+        db.session.add(concept)
+        db.session.commit()
+        existing = concept
+
+    # Seed practice problems tied to the transformations concept
+    problems = [
+        {
+            "question": "Translate the point (−3, 4) by the vector (5, −2). Give the image as (x, y).",
+            "problem_type": "fill_blank",
+            "correct_answer": "(2, 2)",
+            "explanation": "Add component-wise: (−3+5, 4+(−2)) = (2, 2)",
+            "difficulty": 2,
+            "points": 10
+        },
+        {
+            "question": "Reflect the point (2, −7) across the y-axis. Give the image as (x, y).",
+            "problem_type": "fill_blank",
+            "correct_answer": "(−2, −7)",
+            "explanation": "Reflection across y-axis negates x: (x, y) → (−x, y)",
+            "difficulty": 2,
+            "points": 10
+        },
+        {
+            "question": "Rotate the point (1, 5) 90° counterclockwise about the origin.",
+            "problem_type": "fill_blank",
+            "correct_answer": "(−5, 1)",
+            "explanation": "90° CCW rotation: (x, y) → (−y, x)",
+            "difficulty": 3,
+            "points": 15
+        },
+        {
+            "question": "Dilate the point (−4, 3) by a scale factor of k = 1.5 about the origin.",
+            "problem_type": "fill_blank",
+            "correct_answer": "(−6.0, 4.5)",
+            "explanation": "Multiply coordinates by k: (−4×1.5, 3×1.5) = (−6.0, 4.5)",
+            "difficulty": 2,
+            "points": 10
+        },
+        {
+            "question": "Which rule represents reflection across the x-axis?",
+            "problem_type": "multiple_choice",
+            "correct_answer": "(x, y) → (x, −y)",
+            "options": json.dumps(["(x, y) → (−x, y)", "(x, y) → (x, −y)", "(x, y) → (−y, x)", "(x, y) → (kx, ky)"]),
+            "explanation": "Reflection across x-axis negates y.",
+            "difficulty": 1,
+            "points": 10
+        }
+    ]
+
+    # Avoid duplicate seeding: only add if there are no practice problems yet for this concept
+    existing_problems_count = PracticeProblem.query.filter_by(concept_id=existing.id).count()
+    if existing_problems_count == 0:
+        for p in problems:
+            db.session.add(PracticeProblem(concept_id=existing.id, **p))
+        db.session.commit()
+        print("Seeded Transformations concept and practice problems")
+    else:
+        print("Transformations practice problems already exist; skipping")
+
 def main():
     """Main seeding function"""
     app = create_app()

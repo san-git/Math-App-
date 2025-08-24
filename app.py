@@ -78,6 +78,11 @@ def create_app():
                 import seed_data as seeder
                 seeder.seed_concepts()
                 seeder.seed_practice_problems()
+                seeder.seed_transformations()
+            else:
+                # Ensure transformations exist even if base seed ran earlier
+                import seed_data as seeder
+                seeder.seed_transformations()
         except Exception:
             # Fail silently to avoid blocking app startup in production
             pass
