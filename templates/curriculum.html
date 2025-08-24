@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Curriculum - Math Quest{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <h2 class="mb-4 text-primary"><i class="fas fa-graduation-cap me-2"></i>Curriculum</h2>
+    {% if concepts %}
+    <div class="row g-3">
+        {% for c in concepts %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card concept-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ c.name }}</h5>
+                    <p class="card-text small text-muted">{{ c.description }}</p>
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('concepts.concept_detail', slug=c.slug) }}" class="btn btn-primary btn-sm">
+                        View Lesson
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('guest.guest_concept_detail', slug=c.slug) }}" class="btn btn-primary btn-sm">
+                        Preview Lesson
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">No concepts found. Seed the database to populate content.</div>
+    {% endif %}
+    
+    <div class="mt-4">
+        <a href="{{ url_for('guest.guest_home') }}" class="btn btn-success">
+            Try Guest Mode
+        </a>
+        {% if not current_user.is_authenticated %}
+        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary ms-2">
+            Create an Account
+        </a>
+        {% endif %}
+    </div>
+    
+    <div class="mt-4 small text-muted">
+        If you're seeing an empty list on Render, run the seeding task to populate the database.
+    </div>
+</div>
+{% endblock %}
+
+

@@ -2,7 +2,7 @@ services:
   - type: web
     name: math-quest
     env: python
-pythonVersion: 3.11
+    pythonVersion: 3.11
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn "app:create_app()"

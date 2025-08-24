@@ -37,8 +37,27 @@ class Concept(db.Model):
         return []
     
     def is_available_for_user(self, user_progress):
-        """Check if concept is available based on user's completed concepts"""
-        prereqs = self.get_prerequisites_list()
-        if not prereqs:
+        """Check if concept is available based on user's completed concepts.
+
+        Accepts a set of completed concept identifiers which may be either
+        slugs (strings) or ids (integers). Prerequisites are defined as slugs,
+        so if the provided set contains ids, we resolve prerequisite slugs to
+        their corresponding ids before checking availability.
+        """
+        prereq_slugs = self.get_prerequisites_list()
+        if not prereq_slugs:
             return True
-        return all(prereq in user_progress for prereq in prereqs)
+
+        if not user_progress:
+            return False
+
+        # Detect whether user_progress contains ids (ints) or slugs (str)
+        sample_item = next(iter(user_progress))
+        if isinstance(sample_item, int):
+            # user_progress is a set of ids; resolve prereq slugs to ids
+            prereq_concepts = Concept.query.filter(Concept.slug.in_(prereq_slugs)).all()
+            prereq_ids = {c.id for c in prereq_concepts}
+            return prereq_ids.issubset(user_progress)
+        else:
+            # user_progress is expected to be a set of slugs
+            return set(prereq_slugs).issubset(user_progress)
