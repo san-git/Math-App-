@@ -43,7 +43,13 @@ function getAnswer(){
 function submitAnswer(){
   const payload = { answer: getAnswer(), time_taken: 0 };
   fetch('{{ url_for('practice.submit_answer', problem_id=problem.id) }}', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '{{ csrf_token() }}'
+    },
+    credentials: 'same-origin',
+    body: JSON.stringify(payload)
   }).then(r=>r.json()).then(function(data){
     const el = document.getElementById('result');
     if (!el) return;

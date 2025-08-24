@@ -39,3 +39,35 @@
     </a>
 </div>
 {% endblock %} 
+
+{% block extra_js %}
+<script>
+function getInlineAnswer(problemId){
+  const radios = document.querySelectorAll("input[name='p" + problemId + "']");
+  for (const r of radios) { if (r.checked) return r.value; }
+  const text = document.querySelector("input[name='p" + problemId + "-text']");
+  return text ? text.value : '';
+}
+function submitPractice(problemId){
+  const payload = { answer: getInlineAnswer(problemId), time_taken: 0 };
+  fetch('{{ url_for('practice.submit_answer', problem_id=0) }}'.replace('0', problemId), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '{{ csrf_token() }}'
+    },
+    credentials: 'same-origin',
+    body: JSON.stringify(payload)
+  }).then(r=>r.json()).then(function(data){
+    const el = document.getElementById('result-' + problemId);
+    if (!el) return;
+    el.innerHTML = data.correct
+      ? '<span class="text-success"><i class="fas fa-check-circle me-1"></i>Correct! +' + data.score + ' pts</span>'
+      : '<span class="text-danger"><i class="fas fa-times-circle me-1"></i>Not quite. Try again.</span>';
+  }).catch(function(){
+    const el = document.getElementById('result-' + problemId);
+    if (el) el.innerHTML = '<span class="text-warning">Error submitting answer.</span>';
+  });
+}
+</script>
+{% endblock %}

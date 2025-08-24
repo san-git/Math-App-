@@ -8,5 +8,31 @@
     <a class="btn btn-primary" href="{{ url_for('concepts.concept_practice', slug=concept.slug) }}">
         <i class="fas fa-dumbbell me-2"></i>Practice
     </a>
+    <button class="btn btn-outline-success ms-2" onclick="markComplete()">
+        <i class="fas fa-check me-1"></i>Mark Complete (test)
+    </button>
+    <div id="complete-msg" class="mt-2"></div>
 </div>
 {% endblock %} 
+
+{% block extra_js %}
+<script>
+function markComplete(){
+  fetch('{{ url_for('concepts.mark_concept_complete', slug=concept.slug) }}', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '{{ csrf_token() }}'
+    },
+    credentials: 'same-origin',
+    body: JSON.stringify({})
+  }).then(function(){
+    const el = document.getElementById('complete-msg');
+    if (el) el.innerHTML = '<span class="text-success">Marked complete.</span>';
+  }).catch(function(){
+    const el = document.getElementById('complete-msg');
+    if (el) el.innerHTML = '<span class="text-warning">Could not mark complete.</span>';
+  });
+}
+</script>
+{% endblock %}
