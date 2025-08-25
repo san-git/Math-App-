@@ -597,6 +597,149 @@ def seed_transformations():
     else:
         print("Transformations practice problems already exist; skipping")
 
+def seed_additional_8th_grade_concepts():
+    """Seed additional 8th-grade concepts if they don't exist yet."""
+    from models.concept import Concept
+    from models.practice import PracticeProblem
+
+    concepts = [
+        {
+            "slug": "rigid_transformations",
+            "name": "Rigid Transformations",
+            "description": "Translations, reflections, and rotations that preserve distance and angle measure",
+            "category": "Geometry",
+            "order_in_curriculum": 10,
+            "difficulty_level": 3,
+            "lesson_content": """
+            <h2>Rigid Transformations</h2>
+            <p>Rigid transformations (isometries) preserve shape and size: translations, reflections, and rotations.</p>
+            <ul>
+              <li>Translations: (x, y) → (x+a, y+b)</li>
+              <li>Reflections: over x-axis (x, y) → (x, −y); over y-axis (x, y) → (−x, y)</li>
+              <li>Rotations about origin: 90° CCW (x, y) → (−y, x); 180° (x, y) → (−x, −y)</li>
+            </ul>
+            <p>Rigid transformations preserve distance, angle measure, and orientation (except reflections change orientation).</p>
+            """,
+            "examples": json.dumps([
+                {"question": "A translation is rigid: True or False?", "answer": "True"},
+                {"question": "Rotation preserves distances: True or False?", "answer": "True"}
+            ]),
+            "prerequisites": "geometry_basics"
+        },
+        {
+            "slug": "congruence",
+            "name": "Congruence",
+            "description": "Figures are congruent if there is a sequence of rigid motions mapping one to the other",
+            "category": "Geometry",
+            "order_in_curriculum": 11,
+            "difficulty_level": 3,
+            "lesson_content": """
+            <h2>Congruence</h2>
+            <p>Two figures are congruent if one can be mapped to the other using a sequence of rigid transformations.</p>
+            <p>Corresponding sides and angles are equal in congruent figures.</p>
+            """,
+            "examples": json.dumps([
+                {"question": "Which transformations show congruence?", "answer": "Rigid transformations"}
+            ]),
+            "prerequisites": "rigid_transformations"
+        },
+        {
+            "slug": "dilations_similarity",
+            "name": "Dilations and Similarity",
+            "description": "Dilations scale figures; similarity uses dilations and rigid motions",
+            "category": "Geometry",
+            "order_in_curriculum": 12,
+            "difficulty_level": 3,
+            "lesson_content": """
+            <h2>Dilations and Similarity</h2>
+            <p>Dilation with scale factor k sends (x, y) to (kx, ky). Similar figures have equal corresponding angles and proportional side lengths.</p>
+            """,
+            "examples": json.dumps([
+                {"question": "Dilate (2, −3) by k=2", "answer": "(4, −6)"}
+            ]),
+            "prerequisites": "transformations"
+        },
+        {
+            "slug": "tessellations",
+            "name": "Tessellations",
+            "description": "Covering the plane with repeated shapes without gaps or overlaps",
+            "category": "Geometry",
+            "order_in_curriculum": 13,
+            "difficulty_level": 2,
+            "lesson_content": """
+            <h2>Tessellations</h2>
+            <p>Regular tessellations use a single regular polygon (equilateral triangles, squares, or regular hexagons).</p>
+            <p>At each vertex, the angles around the point sum to 360°.</p>
+            """,
+            "examples": json.dumps([
+                {"question": "Do regular pentagons tessellate the plane?", "answer": "No"}
+            ]),
+            "prerequisites": "rigid_transformations"
+        },
+        {
+            "slug": "slope_and_linear_relationships",
+            "name": "Slope and Linear Relationships",
+            "description": "Slope as rate of change, proportional relationships, and linear equations",
+            "category": "Algebra",
+            "order_in_curriculum": 14,
+            "difficulty_level": 3,
+            "lesson_content": """
+            <h2>Slope and Linear Relationships</h2>
+            <p>Slope m = (change in y)/(change in x). Linear equations: y = mx + b. Proportional when b=0.</p>
+            """,
+            "examples": json.dumps([
+                {"question": "Slope between (1,2) and (3,6)", "answer": "2"},
+                {"question": "Is y=3x proportional?", "answer": "Yes"}
+            ]),
+            "prerequisites": "linear_equations"
+        }
+    ]
+
+    for c in concepts:
+        if not Concept.query.filter_by(slug=c["slug"]).first():
+            db.session.add(Concept(**c))
+    db.session.commit()
+
+    # Minimal practice problems for each
+    mapping = {
+        "rigid_transformations": [
+            {"question": "Reflect (−4, 2) across x-axis", "answer": "(−4, −2)", "difficulty": 2, "points": 10},
+            {"question": "Rotate (0, 3) 180°", "answer": "(0, −3)", "difficulty": 2, "points": 10}
+        ],
+        "congruence": [
+            {"question": "Rigid motion preserves side lengths (True/False)", "answer": "True", "difficulty": 1, "points": 10}
+        ],
+        "dilations_similarity": [
+            {"question": "Dilate (−2, 5) by k=0.5", "answer": "(−1.0, 2.5)", "difficulty": 2, "points": 10}
+        ],
+        "tessellations": [
+            {"question": "Squares tessellate the plane (True/False)", "answer": "True", "difficulty": 1, "points": 10}
+        ],
+        "slope_and_linear_relationships": [
+            {"question": "Slope between (2,1) and (5,7)", "answer": "2", "difficulty": 2, "points": 10},
+            {"question": "Is y=2x+3 proportional? (Yes/No)", "answer": "No", "difficulty": 1, "points": 10}
+        ]
+    }
+
+    for slug, plist in mapping.items():
+        concept = Concept.query.filter_by(slug=slug).first()
+        if not concept:
+            continue
+        from models.practice import PracticeProblem
+        if PracticeProblem.query.filter_by(concept_id=concept.id).count() > 0:
+            continue
+        for p in plist:
+            db.session.add(PracticeProblem(
+                concept_id=concept.id,
+                question=p["question"],
+                problem_type="fill_blank",
+                correct_answer=p["answer"],
+                explanation=None,
+                difficulty=p["difficulty"],
+                points=p["points"]
+            ))
+    db.session.commit()
+
 def main():
     """Main seeding function"""
     app = create_app()
@@ -611,6 +754,8 @@ def main():
         # Seed data
         seed_concepts()
         seed_practice_problems()
+        seed_transformations()
+        seed_additional_8th_grade_concepts()
         
         print("Database seeding completed successfully!")
 

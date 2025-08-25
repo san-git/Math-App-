@@ -50,7 +50,19 @@ function submitAnswer(){
     },
     credentials: 'same-origin',
     body: JSON.stringify(payload)
-  }).then(r=>r.json()).then(function(data){
+  }).then(async function(r){
+    if (r.redirected || r.status === 401) {
+      document.getElementById('result').innerHTML = '<span class="text-warning">Session expired. Please log in again.</span>';
+      return;
+    }
+    const ct = r.headers.get('content-type') || '';
+    if (!r.ok) {
+      const text = await r.text();
+      document.getElementById('result').innerHTML = '<span class="text-danger">Submit failed: ' + (text || ('HTTP ' + r.status)) + '</span>';
+      return;
+    }
+    const data = ct.includes('application/json') ? await r.json() : {};
+    
     const el = document.getElementById('result');
     if (!el) return;
     el.innerHTML = data.correct
